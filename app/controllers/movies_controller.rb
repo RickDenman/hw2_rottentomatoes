@@ -9,15 +9,20 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.get_ratings
     sort = params[:sort_by]
+    #logger.debug "Before if statement, the @ratings_filter object is #{@ratings_filter}"
     if params[:ratings] == nil
-	@ratingsFilt = @all_ratings
+	#logger.debug "clause 1 (nil)"
+	@ratings_filter = @all_ratings
     elsif params[:ratings].is_a? Array
-	@ratingsFilt = params[:ratings]
+        #logger.debug "clause 2 (array)"
+	@ratings_filter = params[:ratings]
     else
-	@ratingsFilt = params[:ratings].keys
+	#logger.debug "clause 3 (hash)"
+	@ratings_filter = params[:ratings].keys
     end
-    logger.debug "The object is #{@ratingsFilt}"
-    @movies = Movie.where("rating IN (?)", @ratingsFilt).order(sort)
+    #logger.debug "After if statement, the @ratings_filter object is #{@ratings_filter}"
+   
+    @movies = Movie.where("rating IN (?)", @ratings_filter).order(sort)
   end
 
   def new
