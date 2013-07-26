@@ -9,12 +9,15 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.get_ratings
     sort = params[:sort_by]
-    @ratingsFilt = params[:ratings]
+    if params[:ratings] == nil
+	@ratingsFilt = @all_ratings
+    elsif params[:ratings].is_a? Array
+	@ratingsFilt = params[:ratings]
+    else
+	@ratingsFilt = params[:ratings].keys
+    end
     logger.debug "The object is #{@ratingsFilt}"
-    @movies = Movie.where("rating IN (?)", @ratingsFilt.keys).order(sort)
-
-
-
+    @movies = Movie.where("rating IN (?)", @ratingsFilt).order(sort)
   end
 
   def new
